@@ -5,7 +5,7 @@ require "base64"
 require File.expand_path("../lib/bunny/version", __FILE__)
 
 Gem::Specification.new do |s|
-  s.name = "bunny"
+  s.name = "garaio_bunny"
   s.version = Bunny::VERSION.dup
   s.homepage = "http://rubybunny.info"
   s.summary = "Popular easy to use Ruby client for RabbitMQ"
