@@ -35,6 +35,7 @@ module Bunny
       # old Bunny versions pass a connection here. In that case,
       # we just use default channel from it. MK.
       @channel          = channel
+      @logger           = channel.connection.logger
       @name             = name
       @options          = self.class.add_default_options(name, opts)
 
@@ -337,15 +338,13 @@ module Bunny
         @channel.deregister_queue_named(old_name)
       end
 
-      # TODO: inject and use logger
-      # puts "Recovering queue #{@name}"
+      logger.info("Recovering queue #{@name}")
       begin
         declare! unless @options[:no_declare]
 
         @channel.register_queue(self)
       rescue Exception => e
-        # TODO: inject and use logger
-        puts "Caught #{e.inspect} while redeclaring and registering #{@name}!"
+        @logger.error("Caught #{e.inspect} while redeclaring and registering #{@name}!")
       end
       recover_bindings
     end
@@ -353,8 +352,7 @@ module Bunny
     # @private
     def recover_bindings
       @bindings.each do |b|
-        # TODO: inject and use logger
-        # puts "Recovering binding #{b.inspect}"
+        @logger.info("Recovering binding #{b.inspect}")
         self.bind(b[:exchange], b)
       end
     end
