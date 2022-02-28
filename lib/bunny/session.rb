@@ -380,7 +380,11 @@ module Bunny
         if n && (ch = @channels[n])
           ch
         else
-          ch = Bunny::Channel.new(self, n, ConsumerWorkPool.new(consumer_pool_size || 1, consumer_pool_abort_on_exception, consumer_pool_shutdown_timeout))
+          work_pool = ConsumerWorkPool.new(consumer_pool_size || 1,
+                                           consumer_pool_abort_on_exception,
+                                           consumer_pool_shutdown_timeout,
+                                           logger: logger)
+          ch = Bunny::Channel.new(self, n, work_pool)
           ch.open
           ch
         end

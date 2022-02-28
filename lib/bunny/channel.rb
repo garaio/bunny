@@ -165,7 +165,7 @@ module Bunny
     # @param [Bunny::Session] connection AMQP 0.9.1 connection
     # @param [Integer] id Channel id, pass nil to make Bunny automatically allocate it
     # @param [Bunny::ConsumerWorkPool] work_pool Thread pool for delivery processing, by default of size 1
-    def initialize(connection = nil, id = nil, work_pool = ConsumerWorkPool.new(1))
+    def initialize(connection = nil, id = nil, work_pool = ConsumerWorkPool.new(1, logger: connection&.logger))
       @connection = connection
       @logger     = connection.logger
       @id         = id || @connection.next_channel_id

@@ -17,7 +17,7 @@ module Bunny
     attr_reader :size
     attr_reader :abort_on_exception
 
-    def initialize(size = 1, abort_on_exception = false, shutdown_timeout = 60)
+    def initialize(size = 1, abort_on_exception = false, shutdown_timeout = 60, logger:)
       @size  = size
       @abort_on_exception = abort_on_exception
       @shutdown_timeout = shutdown_timeout
@@ -26,6 +26,7 @@ module Bunny
       @queue = ::Queue.new
       @paused = false
       @running = false
+      @logger = logger
     end
 
 
@@ -107,9 +108,7 @@ module Bunny
           begin
             callable.call
           rescue ::StandardError => e
-            # TODO: use connection logger
-            $stderr.puts e.class.name
-            $stderr.puts e.message
+            @logger&.error("Uncaught exception in #{self.class}: #{e.inspect} @ #{e.backtrace[0]}")
           end
         end
       end
